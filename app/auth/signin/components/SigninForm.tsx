@@ -23,21 +23,10 @@ function SignInForm() {
     },
   });
 
-  const { mutateAsync: registerUser, isPending: isLoading } = useLogin({
-    onSuccess: (resp: string) => {
-      setCookie("token", resp);
-      router.push(`/dashboard/tarih-forecast`);
-      showNotification({ message: "Giriş başarılı", color: "green" });
-    },
-    onError: (err: any) => {
-      showNotification({ message: err.message, color: "green" });
-    },
-  });
+  const { mutateAsync: loginUser } = useLogin();
 
-  const handleSubmit = (values: any) => {
-    // Handle form submission here
-    console.log("Form submitted:", values);
-    registerUser({ userName: values.email, password: values.password });
+  const handleSubmit = async (values: any) => {
+    await loginUser({ userName: values.email, password: values.password });
   };
 
   return (

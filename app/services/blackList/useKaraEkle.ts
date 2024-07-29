@@ -17,10 +17,17 @@ const handleAddToBlackList = async (body: IKaraBody) => {
 
     console.log({ resp });
 
+    if (resp?.data) {
+      showNotification({
+        message: "İşlem başarılı",
+        color: "green",
+      });
+    }
+
     return resp?.data;
   } catch (error: any) {
     showNotification({
-      message: error?.message,
+      message: error?.message ?? "Hata",
       color: "red",
     });
   }

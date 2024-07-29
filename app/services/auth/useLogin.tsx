@@ -2,16 +2,19 @@ import { UseMutationOptions, useMutation } from "@tanstack/react-query";
 import { showNotification } from "@mantine/notifications";
 import { MutationKeys } from "../mutation-keys";
 import { frontServiceAxios, serviceAxios } from "../axios";
+import { setCookie } from "cookies-next";
+import { useRouter } from "next/navigation";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 export interface ILoginForm {
   userName: string;
   password: string;
 }
 
-const handleLogin = async ({
-  userName,
-  password,
-}: ILoginForm): Promise<string | undefined> => {
+const handleLogin = async (
+  router: AppRouterInstance,
+  { userName, password }: ILoginForm
+): Promise<string | undefined> => {
   try {
     const resp = await serviceAxios.post("/security/createToken", {
       userName,
@@ -19,6 +22,7 @@ const handleLogin = async ({
     });
 
     if (resp?.data) {
+      setCookie("token", resp?.data);
       frontServiceAxios.interceptors.request.use(
         (config) => {
           const token = resp?.data;
@@ -31,12 +35,15 @@ const handleLogin = async ({
           return Promise.reject(error);
         }
       );
+
+      router.push(`/dashboard/tarih-forecast`);
+      showNotification({ message: "Giriş başarılı", color: "green" });
     }
 
     return resp?.data as string;
   } catch (error: any) {
     showNotification({
-      message: error?.message,
+      message: error?.message ?? "Something went wrong while logging in",
       color: "red",
     });
   }
@@ -48,8 +55,9 @@ const useLogin = (
     "mutationFn" | "mutationKey"
   >
 ) => {
+  const router = useRouter();
   return useMutation({
-    mutationFn: async (form: ILoginForm) => handleLogin(form),
+    mutationFn: async (form: ILoginForm) => await handleLogin(router, form),
     mutationKey: [MutationKeys.LOGIN],
     ...options,
   });
