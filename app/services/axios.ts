@@ -2,7 +2,7 @@ import axios from "axios";
 import { getCookie } from "cookies-next";
 
 export const serviceAxios = axios.create({
-  baseURL: "https://service.rmosweb.com",
+  baseURL: process.env.NEXT_PUBLIC_SERVICE_URL,
   headers: {
     "Content-type": "application/json",
     "cache-control": "no-cache",
@@ -10,7 +10,7 @@ export const serviceAxios = axios.create({
 });
 
 export const frontServiceAxios = axios.create({
-  baseURL: "https://frontapi.rmosweb.com/api",
+  baseURL: process.env.NEXT_PUBLIC_FRONT_SERVICE_URL,
   headers: {
     "Content-type": "application/json",
     "cache-control": "no-cache",
