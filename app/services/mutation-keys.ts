@@ -1,0 +1,6 @@
+export enum MutationKeys {
+  LOGIN = "LOGIN",
+  STP_RM_FOR_KLASIK_2 = "STP_RM_FOR_KLASIK_2",
+  KARA_GETIR = "KARA_GETIR",
+  KARA_EKLE = "KARA_EKLE",
+}
